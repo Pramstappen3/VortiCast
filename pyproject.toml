@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vorticast"
+version = "0.1.0"
+description = "AI-assisted tropical cyclone monitoring, prediction, and analysis platform"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.110.0",
+    "uvicorn[standard]>=0.28.0",
+    "pydantic>=2.6.0",
+    "pydantic-settings>=2.2.0",
+    "sqlalchemy>=2.0.28",
+    "alembic>=1.13.0",
+    "psycopg2-binary>=2.9.9",
+    "pandas>=2.2.0",
+    "numpy>=1.26.0",
+    "scikit-learn>=1.4.0",
+    "shapely>=2.0.0",
+    "httpx>=0.27.0",
+    "pytest>=8.0.0",
+    "ruff>=0.3.0",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = [
+    "B008",  # Allow Depends/Query in FastAPI parameter defaults
+    "E501",  # Allow descriptive documentation and string messages to exceed line length
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
