@@ -37,9 +37,12 @@ def evaluate_forecasts(
     lat_errors = [abs(true[0] - pred[0]) for true, pred in zip(y_true_coords, y_pred_coords, strict=False)]
     lon_errors = [abs(true[1] - pred[1]) for true, pred in zip(y_true_coords, y_pred_coords, strict=False)]
 
-    wind_diffs = [pred - true for true, pred in zip(y_true_winds, y_pred_winds, strict=False)]
+    wind_diffs = [
+        pred - true
+        for true, pred in zip(y_true_winds, y_pred_winds, strict=False)
+    ]
     wind_abs_errors = [abs(d) for d in wind_diffs]
-    wind_squared_errors = [d**2 for d in wind_diffs]
+    wind_squared_errors = [d ** 2 for d in wind_diffs]
 
     track_mean_error_km = float(np.mean(track_errors_km))
     track_median_error_km = float(np.median(track_errors_km))
@@ -73,7 +76,8 @@ def evaluate_forecasts(
             for true, b_pred in zip(y_true_coords, baseline_pred_coords, strict=False)
         ]
         ref_wind_abs_errors = [
-            abs(b_pred - true) for true, b_pred in zip(y_true_winds, baseline_pred_winds, strict=False)
+            abs(b_pred - true)
+            for true, b_pred in zip(y_true_winds, baseline_pred_winds, strict=False)
         ]
 
         ref_track_mean = float(np.mean(ref_track_errors_km))
@@ -86,7 +90,9 @@ def evaluate_forecasts(
             "track_skill_improvement_pct": round(
                 ((ref_track_mean - track_mean_error_km) / max(0.01, ref_track_mean)) * 100, 2
             ),
-            "intensity_skill_improvement_pct": round(((ref_wind_mae - wind_mae) / max(0.01, ref_wind_mae)) * 100, 2),
+            "intensity_skill_improvement_pct": round(
+                ((ref_wind_mae - wind_mae) / max(0.01, ref_wind_mae)) * 100, 2
+            ),
         }
 
     return report

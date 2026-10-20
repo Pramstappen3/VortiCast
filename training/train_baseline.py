@@ -2,7 +2,6 @@
 """Train baseline ML models for track and intensity prediction."""
 
 import json
-import os
 import sys
 from pathlib import Path
 
@@ -53,9 +52,10 @@ def train() -> None:
     intensity_model.fit(X_train, train_data["delta_wind"])
 
     # Ensure artifacts directory exists
-    os.makedirs(settings.ARTIFACTS_DIR, exist_ok=True)
-    track_path = os.path.join(settings.ARTIFACTS_DIR, "baseline_track_model.joblib")
-    intensity_path = os.path.join(settings.ARTIFACTS_DIR, "baseline_intensity_model.joblib")
+    artifacts_dir = Path(settings.ARTIFACTS_DIR)
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
+    track_path = artifacts_dir / "baseline_track_model.joblib"
+    intensity_path = artifacts_dir / "baseline_intensity_model.joblib"
 
     joblib.dump(track_model, track_path)
     joblib.dump(intensity_model, intensity_path)

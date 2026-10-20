@@ -1,11 +1,11 @@
 """Health check endpoint providing status of API, database, and model artifacts."""
 
-import os
 from typing import Any
 
 from fastapi import APIRouter
 
 from app.core.config import settings
+from app.ml.inference import InferenceEngine
 
 router = APIRouter()
 
@@ -16,13 +16,10 @@ def get_health() -> dict[str, Any]:
 
     Note: VortiCast is an educational and research prototype, not an operational cyclone warning system.
     """
-    # Check model artifacts
-    track_model_path = os.path.join(settings.ARTIFACTS_DIR, "baseline_track_model.joblib")
-    intensity_model_path = os.path.join(settings.ARTIFACTS_DIR, "baseline_intensity_model.joblib")
-
+    engine = InferenceEngine()
     model_status = {
-        "track_model_available": os.path.exists(track_model_path),
-        "intensity_model_available": os.path.exists(intensity_model_path),
+        "track_model_available": engine.is_track_model_available(),
+        "intensity_model_available": engine.is_intensity_model_available(),
     }
 
     # Database connectivity check (simple detection without crashing)

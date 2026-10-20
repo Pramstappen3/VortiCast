@@ -47,3 +47,25 @@ def test_missing_mandatory_columns(tmp_path, db_session: Session) -> None:
     service = CycloneIngestionService(db=db_session)
     with pytest.raises(ValueError, match="CSV missing mandatory columns"):
         service.ingest_csv(bad_csv)
+
+
+def test_observation_longitude_normalization() -> None:
+    from datetime import UTC, datetime
+
+    from app.schemas.observation import ObservationBase
+
+    # Negative longitude wrapping: -185° -> +175°
+    obs_neg = ObservationBase(
+        timestamp_utc=datetime.now(UTC),
+        latitude=10.0,
+        longitude=-185.0,
+    )
+    assert obs_neg.longitude == 175.0
+
+    # Positive longitude wrapping: +185° -> -175°
+    obs_pos = ObservationBase(
+        timestamp_utc=datetime.now(UTC),
+        latitude=10.0,
+        longitude=185.0,
+    )
+    assert obs_pos.longitude == -175.0

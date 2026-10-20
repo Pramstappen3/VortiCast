@@ -16,6 +16,7 @@ from app.schemas.explanation import (
     EvidenceItem,
     PredictionComparisonResponse,
 )
+from app.schemas.prediction import PredictionResponse
 from app.utils.geospatial_utils import haversine_distance_km
 
 
@@ -76,9 +77,12 @@ class PredictionComparisonService:
             measured_diffs["lat_diff_deg"] = round(
                 (current_pred.predicted_latitude or 0.0) - (previous_pred.predicted_latitude or 0.0), 3
             )
-            measured_diffs["lon_diff_deg"] = round(
-                (current_pred.predicted_longitude or 0.0) - (previous_pred.predicted_longitude or 0.0), 3
-            )
+            lon_diff = (current_pred.predicted_longitude or 0.0) - (previous_pred.predicted_longitude or 0.0)
+            if lon_diff > 180.0:
+                lon_diff -= 360.0
+            elif lon_diff < -180.0:
+                lon_diff += 360.0
+            measured_diffs["lon_diff_deg"] = round(lon_diff, 3)
 
         if wind_delta_kts is not None and abs(wind_delta_kts) > 0.1:
             variables_changed.append("wind_speed")
@@ -194,8 +198,8 @@ class PredictionComparisonService:
             evidence=evidence,
             limitations=limitations,
             created_at=explanation_record.created_at,
-            current_prediction=current_pred,  # type: ignore
-            previous_prediction=previous_pred,  # type: ignore
+            current_prediction=PredictionResponse.model_validate(current_pred),
+            previous_prediction=PredictionResponse.model_validate(previous_pred) if previous_pred else None,
         )
 
     def explain_prediction_changes(self, prediction_id: int) -> PredictionComparisonResponse:
@@ -235,7 +239,7 @@ class PredictionComparisonService:
                     "No earlier forecast exists for this storm and horizon. Change analysis requires at least two successive runs.",
                 ],
                 created_at=datetime.now(UTC),
-                current_prediction=current_pred,  # type: ignore
+                current_prediction=PredictionResponse.model_validate(current_pred),
                 previous_prediction=None,
             )
 

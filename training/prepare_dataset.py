@@ -50,6 +50,10 @@ def build_samples_for_storm(
 
             delta_lat = target_lat - features["curr_lat"]
             delta_lon = target_lon - features["curr_lon"]
+            if delta_lon > 180.0:
+                delta_lon -= 360.0
+            elif delta_lon < -180.0:
+                delta_lon += 360.0
             delta_wind = target_wind - features["curr_wind_speed_kts"]
 
             samples.append(

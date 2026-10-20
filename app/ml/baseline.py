@@ -24,7 +24,13 @@ class ConstantMotionReferenceModel:
 
         pred_lat = curr_lat + (lat_diff * step_factor)
         pred_lon = curr_lon + (lon_diff * step_factor)
-        pred_wind = curr_wind  # Persistence for intensity
+
+        # Constrain coordinates
+        pred_lat = max(-90.0, min(90.0, pred_lat))
+        if pred_lon > 180.0 or pred_lon < -180.0:
+            pred_lon = ((pred_lon + 180.0) % 360.0) - 180.0
+
+        pred_wind = max(0.0, curr_wind)  # Persistence for intensity
 
         return {
             "predicted_latitude": round(float(pred_lat), 4),
@@ -61,10 +67,8 @@ class BaselineMLTrackModel:
 
         # Constrain coordinates
         final_lat = max(-90.0, min(90.0, final_lat))
-        if final_lon > 180.0:
+        if final_lon > 180.0 or final_lon < -180.0:
             final_lon = ((final_lon + 180.0) % 360.0) - 180.0
-        elif final_lon < -180.0:
-            final_lon = ((final_lon - 180.0) % 360.0) + 180.0
 
         return round(final_lat, 4), round(final_lon, 4)
 

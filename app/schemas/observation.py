@@ -22,9 +22,12 @@ class ObservationBase(BaseModel):
     def normalize_longitude(cls, v: float) -> float:
         """Normalizes longitude into standard -180 to 180 coordinate frame."""
         val = float(v)
-        if val > 180.0:
-            val = ((val + 180.0) % 360.0) - 180.0
-        return round(val, 4)
+        if -180.0 <= val <= 180.0:
+            return round(val, 4)
+        norm = ((val + 180.0) % 360.0) - 180.0
+        if norm == -180.0 and val > 0:
+            norm = 180.0
+        return round(norm, 4)
 
 
 class ObservationCreate(ObservationBase):

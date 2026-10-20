@@ -58,8 +58,25 @@ def test_forecast_comparison_calculation(db_session: Session) -> None:
 
 def test_incompatible_storms_comparison(db_session: Session) -> None:
     service = PredictionComparisonService(db=db_session)
-    pred1 = Prediction(storm_id=1, forecast_horizon_hours=24, issued_at_utc=datetime.now(UTC), valid_at_utc=datetime.now(UTC), model_name="M", model_version="1", input_snapshot_id="1")
-    pred2 = Prediction(storm_id=2, forecast_horizon_hours=24, issued_at_utc=datetime.now(UTC), valid_at_utc=datetime.now(UTC), model_name="M", model_version="1", input_snapshot_id="2")
+    now = datetime.now(UTC)
+    pred1 = Prediction(
+        storm_id=1,
+        forecast_horizon_hours=24,
+        issued_at_utc=now,
+        valid_at_utc=now,
+        model_name="M",
+        model_version="1",
+        input_snapshot_id="1",
+    )
+    pred2 = Prediction(
+        storm_id=2,
+        forecast_horizon_hours=24,
+        issued_at_utc=now,
+        valid_at_utc=now,
+        model_name="M",
+        model_version="1",
+        input_snapshot_id="2",
+    )
 
     with pytest.raises(IncompatibleForecastComparisonException, match="Cannot compare predictions from different storms"):
         service.compare_predictions(pred2, pred1)
@@ -67,8 +84,25 @@ def test_incompatible_storms_comparison(db_session: Session) -> None:
 
 def test_incompatible_horizons_comparison(db_session: Session) -> None:
     service = PredictionComparisonService(db=db_session)
-    pred1 = Prediction(storm_id=1, forecast_horizon_hours=24, issued_at_utc=datetime.now(UTC), valid_at_utc=datetime.now(UTC), model_name="M", model_version="1", input_snapshot_id="1")
-    pred2 = Prediction(storm_id=1, forecast_horizon_hours=48, issued_at_utc=datetime.now(UTC), valid_at_utc=datetime.now(UTC), model_name="M", model_version="1", input_snapshot_id="2")
+    now = datetime.now(UTC)
+    pred1 = Prediction(
+        storm_id=1,
+        forecast_horizon_hours=24,
+        issued_at_utc=now,
+        valid_at_utc=now,
+        model_name="M",
+        model_version="1",
+        input_snapshot_id="1",
+    )
+    pred2 = Prediction(
+        storm_id=1,
+        forecast_horizon_hours=48,
+        issued_at_utc=now,
+        valid_at_utc=now,
+        model_name="M",
+        model_version="1",
+        input_snapshot_id="2",
+    )
 
     with pytest.raises(IncompatibleForecastComparisonException, match="Forecast horizons differ"):
         service.compare_predictions(pred2, pred1)

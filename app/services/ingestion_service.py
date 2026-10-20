@@ -141,21 +141,25 @@ class CycloneIngestionService:
                     summary.rejection_reasons.append({"row": row_num, "reason": f"Invalid timestamp '{raw_time}': {e}"})
                     continue
 
-                # Parse wind speed (never treat empty as 0)
+                # Parse wind speed (never treat empty or missing indicators as 0)
                 raw_wind = (row.get(wind_col) or "").strip() if wind_col else ""
                 wind_speed_kts: float | None = None
-                if raw_wind and raw_wind not in ("-999", "NOT_SET", "NA", "null", "None", ""):
+                if raw_wind and raw_wind not in ("-999", "-999.0", "-99", "NOT_SET", "NA", "null", "None", "", "nan", "NaN"):
                     try:
-                        wind_speed_kts = float(raw_wind)
+                        parsed_wind = float(raw_wind)
+                        if 0.0 <= parsed_wind <= 350.0:
+                            wind_speed_kts = parsed_wind
                     except ValueError:
                         pass
 
                 # Parse central pressure
                 raw_pres = (row.get(pres_col) or "").strip() if pres_col else ""
                 central_pres_mb: float | None = None
-                if raw_pres and raw_pres not in ("-999", "NOT_SET", "NA", "null", "None", ""):
+                if raw_pres and raw_pres not in ("-999", "-999.0", "-99", "NOT_SET", "NA", "null", "None", "", "nan", "NaN"):
                     try:
-                        central_pres_mb = float(raw_pres)
+                        parsed_pres = float(raw_pres)
+                        if 750.0 <= parsed_pres <= 1100.0:
+                            central_pres_mb = parsed_pres
                     except ValueError:
                         pass
 

@@ -40,4 +40,6 @@ class Storm(Base, TimestampMixin):
         order_by="Prediction.created_at",
     )
 
-    __table_args__ = (Index("idx_storm_basin_time", "basin", "start_time"),)
+    __table_args__ = (
+        Index("idx_storm_basin_time", "basin", "start_time"),
+    )

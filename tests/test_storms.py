@@ -64,3 +64,23 @@ def test_storm_analytics(client: TestClient, sample_storm: Storm) -> None:
     assert data["duration_hours"] == 18.0
     assert data["cumulative_distance_km"] > 0
     assert len(data["track"]) == 4
+
+
+def test_storm_analytics_not_found(client: TestClient) -> None:
+    response = client.get("/api/v1/storms/999999/analytics")
+    assert response.status_code == 404
+    assert response.json()["error"] == "RESOURCE_NOT_FOUND"
+
+
+def test_storm_analytics_empty_observations(client: TestClient, db_session) -> None:
+    empty_storm = Storm(external_id="EMPTY_001", name="EMPTY", basin="NA", data_source="IBTrACS")
+    db_session.add(empty_storm)
+    db_session.commit()
+
+    response = client.get(f"/api/v1/storms/{empty_storm.id}/analytics")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["total_observations"] == 0
+    assert data["duration_hours"] == 0.0
+    assert data["cumulative_distance_km"] == 0.0
+    assert data["track"] == []

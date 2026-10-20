@@ -77,6 +77,10 @@ def extract_features_from_sequence(
 
     lat_diff = curr_lat - prev_lat
     lon_diff = curr_lon - prev_lon
+    if lon_diff > 180.0:
+        lon_diff -= 360.0
+    elif lon_diff < -180.0:
+        lon_diff += 360.0
 
     dist_km = haversine_distance_km(prev_lat, prev_lon, curr_lat, curr_lon)
     bearing = calculate_bearing(prev_lat, prev_lon, curr_lat, curr_lon)
