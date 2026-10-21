@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-navy-dark: #0B1220;
+    --bg-navy-panel: #111C2E;
+    --border-subtle: #1E293B;
+    --color-cyan-accent: #22D3EE;
+  }
+
+  body {
+    background-color: #0B1220;
+    color: #F8FAFC;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  /* Custom subtle scrollbars */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0B1220;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1E2D4A;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #2A3C5F;
+  }
+}
+
+/* Custom Leaflet Map styling for Dark Navy theme */
+.leaflet-container {
+  background-color: #0B1220 !important;
+  font-family: inherit !important;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+}
+
+.leaflet-bar {
+  border: 1px solid #1E293B !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+
+.leaflet-bar a {
+  background-color: #111C2E !important;
+  color: #94A3B8 !important;
+  border-bottom: 1px solid #1E293B !important;
+}
+
+.leaflet-bar a:hover {
+  background-color: #1E2D4A !important;
+  color: #22D3EE !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background: #111C2E !important;
+  color: #F8FAFC !important;
+  border: 1px solid #24344D !important;
+  border-radius: 8px !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6) !important;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+  line-height: 1.4 !important;
+}
+
+.leaflet-popup-tip {
+  background: #111C2E !important;
+  border: 1px solid #24344D !important;
+}
+
+.leaflet-container a.leaflet-popup-close-button {
+  color: #94A3B8 !important;
+  padding: 8px 8px 0 0 !important;
+}
+
+.leaflet-container a.leaflet-popup-close-button:hover {
+  color: #22D3EE !important;
+}

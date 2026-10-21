@@ -54,3 +54,17 @@ data/processed/*
 !data/processed/.gitkeep
 data/artifacts/*
 !data/artifacts/.gitkeep
+backend/data/raw/*
+!backend/data/raw/.gitkeep
+backend/data/processed/*
+!backend/data/processed/.gitkeep
+backend/data/artifacts/*
+!backend/data/artifacts/.gitkeep
+
+# Frontend / Node
+node_modules/
+frontend/node_modules/
+dist/
+frontend/dist/
+frontend/dist-ssr/
+*.local
