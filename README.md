@@ -89,29 +89,52 @@ VortiCast/
 - Optional: Docker and Docker Compose (if using PostgreSQL).
 
 ### Backend Setup
-```bash
-cd backend
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-cp .env.example .env
-alembic upgrade head
-```
-
-VortiCast backend defaults to zero-configuration **SQLite** (`vorticast.db`), so you can run and test immediately without configuring a database server!
-
-For PostgreSQL, set `DATABASE_URL` in `backend/.env`:
-```env
-DATABASE_URL="postgresql+psycopg2://vorticast:vorticast_password@localhost:5432/vorticast"
-```
-*(You can start local PostgreSQL with `docker compose up -d`)*.
+1. Navigate to the `backend/` directory:
+   ```bash
+   cd backend
+   ```
+2. Create and activate a Python virtual environment:
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate
+   ```
+3. Install backend dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. Create your local backend environment file from the template:
+   ```bash
+   cp .env.example .env
+   ```
+   * VortiCast defaults to zero-configuration **SQLite** (`vorticast.db`), allowing immediate local development.
+   * For local PostgreSQL, start the container (`docker compose up -d`) and set `DATABASE_URL` in `backend/.env`:
+     ```env
+     DATABASE_URL="postgresql+psycopg2://vorticast:vorticast_password@localhost:5432/vorticast"
+     ```
+5. Apply database migrations:
+   ```bash
+   alembic upgrade head
+   ```
 
 ### Frontend Setup
-```bash
-cd frontend
-npm ci
-cp .env.example .env
-```
+1. Navigate to the `frontend/` directory:
+   ```bash
+   cd frontend
+   ```
+2. Install dependencies:
+   ```bash
+   npm ci
+   ```
+3. Create your local frontend environment file from the template:
+   ```bash
+   cp .env.example .env
+   ```
+4. Configure frontend environment variables in `frontend/.env`:
+   * **`VITE_API_BASE_URL`**: Target backend API URL (default: `http://localhost:8000/api/v1`). Change this if the backend runs on a different host or port.
+   * **`VITE_USE_MOCK_DATA`**:
+     * Set to `true` (default) to utilize the high-fidelity demonstration dataset.
+     * Set to `false` to enforce a direct connection to the live FastAPI backend server.
+   * **`VITE_MAP_TILE_URL`** & **`VITE_MAP_ATTRIBUTION`**: Optional custom CartoDB or OpenStreetMap tile server configuration.
 
 ---
 
