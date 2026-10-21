@@ -32,20 +32,36 @@ class Settings(BaseSettings):
             return [i.strip() for i in v.split(",") if i.strip()]
         return v
 
-    # Database
-    DATABASE_URL: str = "sqlite:///./vorticast.db"
-
     # Storage Paths
     BASE_DIR: Path = Path(__file__).resolve().parent.parent.parent
-    ARTIFACTS_DIR: str = "./data/artifacts"
-    DATA_RAW_DIR: str = "./data/raw"
-    DATA_PROCESSED_DIR: str = "./data/processed"
+    ARTIFACTS_DIR: str = str(Path(__file__).resolve().parent.parent.parent / "data/artifacts")
+    DATA_RAW_DIR: str = str(Path(__file__).resolve().parent.parent.parent / "data/raw")
+    DATA_PROCESSED_DIR: str = str(Path(__file__).resolve().parent.parent.parent / "data/processed")
+
+    # Database
+    DATABASE_URL: str = f"sqlite:///{Path(__file__).resolve().parent.parent.parent}/vorticast.db"
+
+    @field_validator("DATABASE_URL", mode="before")
+    @classmethod
+    def resolve_database_url(cls, v: str) -> str:
+        if v and v.startswith("sqlite:///./"):
+            base = Path(__file__).resolve().parent.parent.parent
+            return f"sqlite:///{base / v[len('sqlite:///./'):]}"
+        return v
+
+    @field_validator("ARTIFACTS_DIR", "DATA_RAW_DIR", "DATA_PROCESSED_DIR", mode="before")
+    @classmethod
+    def resolve_relative_paths(cls, v: str) -> str:
+        if v and not Path(v).is_absolute():
+            base = Path(__file__).resolve().parent.parent.parent
+            return str((base / v).resolve())
+        return v
 
     # Logging
     LOG_LEVEL: str = "INFO"
 
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=[str(Path(__file__).resolve().parent.parent.parent / ".env"), ".env"],
         env_file_encoding="utf-8",
         case_sensitive=True,
         extra="ignore",
