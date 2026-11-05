@@ -74,6 +74,19 @@ VortiCast/
 │   ├── vite.config.ts           # Vite configuration with proxy and aliases
 │   ├── tailwind.config.js       # Tailwind CSS styling configuration
 │   └── .env.example             # Frontend environment template
+├── ml/                          # Dedicated Machine Learning & research environment
+│   ├── data/                    # Raw, processed, and external meteorological datasets
+│   │   ├── raw/
+│   │   ├── processed/
+│   │   └── external/
+│   ├── notebooks/               # EDA and experimentation Jupyter notebooks
+│   ├── src/                     # ML modules (preprocessing, models, training, evaluation, prediction)
+│   ├── saved_models/            # Serialized model weights and trained artifacts
+│   ├── tests/                   # Unit and environment sanity tests
+│   ├── requirements.txt         # Pinned ML dependencies (scientific, netCDF4, xarray, scikit-learn)
+│   ├── verify_env.py            # Environment and package verification script
+│   ├── .env.example             # ML environment configuration template
+│   └── README.md                # ML module documentation
 ├── docker-compose.yml           # Optional PostgreSQL container
 ├── .gitignore                   # Root gitignore
 └── README.md                    # Project documentation
@@ -135,6 +148,39 @@ VortiCast/
      * Set to `true` (default) to utilize the high-fidelity demonstration dataset.
      * Set to `false` to enforce a direct connection to the live FastAPI backend server.
    * **`VITE_MAP_TILE_URL`** & **`VITE_MAP_ATTRIBUTION`**: Optional custom CartoDB or OpenStreetMap tile server configuration.
+
+### Machine Learning Environment Setup (`ml/`)
+1. Navigate to the `ml/` directory:
+   ```bash
+   cd ml
+   ```
+2. Create and activate an isolated Python virtual environment:
+   ```bash
+   # Create virtual environment
+   python3 -m venv .venv
+
+   # Activate on Linux / macOS
+   source .venv/bin/activate
+
+   # Activate on Windows (Command Prompt)
+   .venv\Scripts\activate.bat
+   ```
+3. Install ML dependencies (scientific stack, xarray, netCDF4, h5py, scikit-learn, Jupyter):
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. Create local configuration file from template:
+   ```bash
+   cp .env.example .env
+   ```
+5. Verify the environment:
+   ```bash
+   python verify_env.py
+   ```
+6. (Optional) Launch Jupyter Notebook for research and prototyping:
+   ```bash
+   jupyter notebook --notebook-dir=notebooks
+   ```
 
 ---
 
